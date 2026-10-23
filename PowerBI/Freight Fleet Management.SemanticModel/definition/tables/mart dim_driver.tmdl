@@ -1,0 +1,32 @@
+table 'mart dim_driver'
+	lineageTag: cc72c712-4abb-4462-afb9-65a6343122a4
+
+	column driver_key
+		dataType: int64
+		formatString: 0
+		lineageTag: e88cf86f-bedc-4e11-8875-18b4c36124da
+		summarizeBy: none
+		sourceColumn: driver_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column driver_name
+		dataType: string
+		lineageTag: 449c29ba-4ca0-4348-9b34-248c3f4b7c6f
+		summarizeBy: none
+		sourceColumn: driver_name
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'mart dim_driver' = m
+		mode: import
+		source =
+				let
+				  Source = Sql.Databases("DESKTOP-HPKUKRN\DANGSERVER"),
+				  #"Navigation 1" = Source{[Name = "freight_fleet_management"]}[Data],
+				  #"Navigation 2" = #"Navigation 1"{[Schema = "mart", Item = "dim_driver"]}[Data]
+				in
+				  #"Navigation 2"
+
+	annotation PBI_ResultType = Table
+

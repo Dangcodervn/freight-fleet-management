@@ -1,0 +1,40 @@
+table 'mart dim_vehicle'
+	lineageTag: 84610906-52dd-4e62-83d4-1df2f3852348
+
+	column vehicle_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 3bf98249-3fb6-4062-afa5-596bda61d792
+		summarizeBy: none
+		sourceColumn: vehicle_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column vehicle_registration
+		dataType: string
+		lineageTag: a2180737-2014-4767-8936-93b3c25823d5
+		summarizeBy: none
+		sourceColumn: vehicle_registration
+
+		annotation SummarizationSetBy = Automatic
+
+	column vehicle_type_std
+		dataType: string
+		lineageTag: e5addd4e-8c07-4c78-a598-7302c2e7ec20
+		summarizeBy: none
+		sourceColumn: vehicle_type_std
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'mart dim_vehicle' = m
+		mode: import
+		source =
+				let
+				  Source = Sql.Databases("DESKTOP-HPKUKRN\DANGSERVER"),
+				  #"Navigation 1" = Source{[Name = "freight_fleet_management"]}[Data],
+				  #"Navigation 2" = #"Navigation 1"{[Schema = "mart", Item = "dim_vehicle"]}[Data]
+				in
+				  #"Navigation 2"
+
+	annotation PBI_ResultType = Table
+

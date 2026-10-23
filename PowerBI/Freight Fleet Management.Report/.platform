@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Freight Fleet Management"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "27eaf98e-8e28-4ee6-92eb-f9c7e56968f6"
+  }
+}

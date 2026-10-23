@@ -1,0 +1,345 @@
+table 'mart fact_shipment'
+	lineageTag: 21870de6-3e0d-468a-b94a-c3641744b372
+
+	column shipment_key
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: a3e450df-d261-4063-9c01-efefd5e98b1d
+		summarizeBy: none
+		sourceColumn: shipment_key
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column booking_id
+		dataType: string
+		lineageTag: 5aba47ad-3df8-49c4-a9f8-7e8bda2c8c87
+		summarizeBy: none
+		sourceColumn: booking_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column booking_date_key
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 305b92e1-91de-46d4-b8b6-04fbbdbc3f2b
+		summarizeBy: none
+		sourceColumn: booking_date_key
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column trip_start_date_key
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: f113e1df-1ae1-4b8c-867b-7f811fe2369a
+		summarizeBy: none
+		sourceColumn: trip_start_date_key
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column actual_eta_date_key
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: a0bfd065-294c-48e8-8581-02f525d2aa09
+		summarizeBy: none
+		sourceColumn: actual_eta_date_key
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column vehicle_key
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: bcb97d38-4981-40ae-9e80-5fc6c9c10a14
+		summarizeBy: none
+		sourceColumn: vehicle_key
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_key
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: da59d8d1-f03a-4104-a930-35c1c0f84353
+		summarizeBy: none
+		sourceColumn: customer_key
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column material_key
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 298b381b-6268-4732-97ab-f07422e3940b
+		summarizeBy: none
+		sourceColumn: material_key
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column route_key
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 61bcd90c-3cf0-4bfb-b70f-a41225bf1071
+		summarizeBy: none
+		sourceColumn: route_key
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column driver_key
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 8dce46e6-dc72-4889-808b-b0875f68f45d
+		summarizeBy: none
+		sourceColumn: driver_key
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column shipment_type
+		dataType: string
+		lineageTag: 1490eae1-d3de-4d60-80fa-8bf50a025df6
+		summarizeBy: none
+		sourceColumn: shipment_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column transportation_distance_km
+		dataType: double
+		lineageTag: 8e6f542d-9723-4524-b1a6-529eefacbf5f
+		summarizeBy: none
+		sourceColumn: transportation_distance_km
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column planned_eta
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: f7b2f844-e4ca-43ca-86c4-65fa7938ed7b
+		summarizeBy: none
+		sourceColumn: planned_eta
+
+		annotation SummarizationSetBy = Automatic
+
+	column actual_eta
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 0d2047dd-bf96-4aeb-867f-0a95f4076cda
+		summarizeBy: none
+		sourceColumn: actual_eta
+
+		annotation SummarizationSetBy = Automatic
+
+	column trip_start_date
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 019a91c6-6064-4f2b-a71e-4ce140a0ad11
+		summarizeBy: none
+		sourceColumn: trip_start_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column origin_lat
+		dataType: double
+		lineageTag: 7b51f18d-6e45-4ef9-80bf-64be8a3acc2b
+		summarizeBy: none
+		sourceColumn: origin_lat
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column origin_long
+		dataType: double
+		lineageTag: 224f4bd9-005d-4cc8-a1d3-a4aaaeeb83b3
+		summarizeBy: none
+		sourceColumn: origin_long
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column dest_lat
+		dataType: double
+		lineageTag: 8c3f7e65-931d-4788-bde3-40fefa72f9a0
+		summarizeBy: none
+		sourceColumn: dest_lat
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column dest_long
+		dataType: double
+		lineageTag: 9588c630-a99e-4c27-8400-1e6d339e9123
+		summarizeBy: none
+		sourceColumn: dest_long
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column is_ontime
+		dataType: int64
+		formatString: 0
+		lineageTag: 2ed4efc0-fc41-4526-8d3a-110255bb246e
+		summarizeBy: none
+		sourceColumn: is_ontime
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column eta_variance_hours
+		dataType: double
+		lineageTag: 9ea8a82c-fd6c-4d3e-b6c3-8f715531046a
+		summarizeBy: none
+		sourceColumn: eta_variance_hours
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column trip_duration_hours
+		dataType: double
+		lineageTag: 6783188f-6d95-4aa4-b257-da4f411d7b80
+		summarizeBy: none
+		sourceColumn: trip_duration_hours
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column hours_per_km
+		dataType: double
+		lineageTag: 9a0164bf-e82d-4317-bd17-3ea41001124f
+		summarizeBy: none
+		sourceColumn: hours_per_km
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column distance_band
+		dataType: string
+		lineageTag: d0b1377c-4700-4d51-b6df-b8ab44494863
+		summarizeBy: none
+		sourceColumn: distance_band
+		sortByColumn: distance_band_order
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column distance_band_order
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 852c0370-60cd-45da-a151-3e3f93926a63
+		summarizeBy: none
+		sourceColumn: distance_band_order
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column trip_start_hour
+		dataType: int64
+		formatString: 0
+		lineageTag: 3311b06e-4583-4bd2-a06c-9e0e0e739c8d
+		summarizeBy: none
+		sourceColumn: trip_start_hour
+
+		annotation SummarizationSetBy = User
+
+	column payload_mt
+		dataType: double
+		lineageTag: 3025a893-a4e6-4498-be5a-c9c642a28801
+		summarizeBy: none
+		sourceColumn: payload_mt
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column payload_group
+		dataType: string
+		lineageTag: f4d0e831-8142-47d5-93c8-b7c4cefcbded
+		summarizeBy: none
+		sourceColumn: payload_group
+		sortByColumn: payload_group_order
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column payload_group_order
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 4e3e6009-220c-4aa0-8c5f-87e6534f4556
+		summarizeBy: none
+		sourceColumn: payload_group_order
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column eta_variance_band
+		dataType: string
+		lineageTag: 0f22e26f-eeb3-431b-9a78-71fd748a8219
+		summarizeBy: none
+		sourceColumn: eta_variance_band
+		sortByColumn: eta_variance_band_order
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column eta_variance_band_order
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: b7f290a8-9899-4e57-a593-3666e6fb4507
+		summarizeBy: none
+		sourceColumn: eta_variance_band_order
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	partition 'mart fact_shipment' = m
+		mode: import
+		source =
+				let
+				  Source = Sql.Databases("DESKTOP-HPKUKRN\DANGSERVER"),
+				  #"Navigation 1" = Source{[Name = "freight_fleet_management"]}[Data],
+				  #"Navigation 2" = #"Navigation 1"{[Schema = "mart", Item = "fact_shipment"]}[Data]
+				in
+				  #"Navigation 2"
+
+	annotation PBI_ResultType = Table
+

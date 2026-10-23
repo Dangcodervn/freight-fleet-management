@@ -1,0 +1,162 @@
+table 'mart dim_date'
+	lineageTag: 0ee225b1-0d18-4a02-9051-3403b6ddfb84
+	dataCategory: Time
+
+	column date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 8488f582-e1a0-4d74-9856-d7a60f51d92d
+		summarizeBy: none
+		sourceColumn: date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column full_date
+		dataType: dateTime
+		isUnique
+		formatString: Long Date
+		lineageTag: 6b422d05-df74-4021-94a2-8c4236f5462e
+		summarizeBy: none
+		sourceColumn: full_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column year_num
+		dataType: int64
+		formatString: 0
+		lineageTag: 72b51839-f8ec-448c-8e1e-20a2daf6afa0
+		summarizeBy: none
+		sourceColumn: year_num
+
+		annotation SummarizationSetBy = User
+
+	column quarter_num
+		dataType: int64
+		formatString: 0
+		lineageTag: bac30fbe-4814-47de-92f1-cc3c06203827
+		summarizeBy: none
+		sourceColumn: quarter_num
+
+		annotation SummarizationSetBy = User
+
+	column month_num
+		dataType: int64
+		formatString: 0
+		lineageTag: 6efcb15b-2a34-4a8a-b7f8-34d7209272ab
+		summarizeBy: none
+		sourceColumn: month_num
+
+		annotation SummarizationSetBy = User
+
+	column month_name
+		dataType: string
+		lineageTag: 3aca64b9-d0ba-4572-8162-3dd89e4b0899
+		summarizeBy: none
+		sourceColumn: month_name
+		sortByColumn: month_num
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column year_month
+		dataType: string
+		lineageTag: dbc22e21-08ed-466f-985e-0bd270e660eb
+		summarizeBy: none
+		sourceColumn: year_month
+
+		annotation SummarizationSetBy = Automatic
+
+	column iso_year
+		dataType: int64
+		formatString: 0
+		lineageTag: d1d82588-46f6-46e6-9ebd-fc52831a8a0b
+		summarizeBy: none
+		sourceColumn: iso_year
+
+		annotation SummarizationSetBy = User
+
+	column iso_week_num
+		dataType: int64
+		formatString: 0
+		lineageTag: 299c734d-f9d6-4101-a7fc-0f7b9360e9fe
+		summarizeBy: none
+		sourceColumn: iso_week_num
+
+		annotation SummarizationSetBy = User
+
+	column iso_week_start
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: f70085f2-9587-426d-bb7a-5ad5f17d2d92
+		summarizeBy: none
+		sourceColumn: iso_week_start
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column iso_day_of_week
+		dataType: int64
+		formatString: 0
+		lineageTag: ae8c857e-0e5f-4258-963a-8b5916114344
+		summarizeBy: none
+		sourceColumn: iso_day_of_week
+
+		annotation SummarizationSetBy = User
+
+	column day_name
+		dataType: string
+		lineageTag: c038a21f-7b95-4b3e-8aae-313d7ff854bc
+		summarizeBy: none
+		sourceColumn: day_name
+		sortByColumn: iso_day_of_week
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	hierarchy Calendar
+		lineageTag: f6a00494-9672-4bbd-aff6-154f93ad4487
+
+		level year_num
+			lineageTag: 2f8ac98d-2b68-49d5-9f73-9fac95352a0a
+			column: year_num
+
+		level quarter_num
+			lineageTag: d7d2367b-2c78-4284-8a57-e62bd0af82ac
+			column: quarter_num
+
+		level month_name
+			lineageTag: 176a2f67-b62c-4d91-915f-1d4a2b8ed388
+			column: month_name
+
+		level full_date
+			lineageTag: f6d18013-b1db-4257-a9a2-b4e1d65728e0
+			column: full_date
+
+	hierarchy 'ISO Calendar'
+		lineageTag: 451ddcd4-d30d-4a03-9a8a-4c9da92eb7c2
+
+		level iso_year
+			lineageTag: cba58131-9893-43c6-8c25-5edc5aee31e4
+			column: iso_year
+
+		level iso_week_num
+			lineageTag: 47ac825b-570f-4f88-a265-e02e3d053c86
+			column: iso_week_num
+
+	partition 'mart dim_date' = m
+		mode: import
+		source =
+				let
+				  Source = Sql.Databases("DESKTOP-HPKUKRN\DANGSERVER"),
+				  #"Navigation 1" = Source{[Name = "freight_fleet_management"]}[Data],
+				  #"Navigation 2" = #"Navigation 1"{[Schema = "mart", Item = "dim_date"]}[Data]
+				in
+				  #"Navigation 2"
+
+	annotation PBI_ResultType = Table
+

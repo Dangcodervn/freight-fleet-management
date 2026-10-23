@@ -1,0 +1,34 @@
+relationship AutoDetected_7d332b3d-bcb8-4540-aa1d-c2916aa17bc1
+	fromColumn: 'mart fact_shipment'.customer_key
+	toColumn: 'mart dim_customer'.customer_key
+
+relationship AutoDetected_1f82d1fe-40fe-4e6c-b259-626b26d263ce
+	fromColumn: 'mart fact_shipment'.driver_key
+	toColumn: 'mart dim_driver'.driver_key
+
+relationship AutoDetected_21fb4894-0a35-4963-895d-3078e8da51bf
+	fromColumn: 'mart fact_shipment'.material_key
+	toColumn: 'mart dim_material'.material_key
+
+relationship AutoDetected_4c82cc5b-cc52-4dc3-8732-6f2f01ddbdec
+	fromColumn: 'mart fact_shipment'.route_key
+	toColumn: 'mart dim_route'.route_key
+
+relationship AutoDetected_cf0637d4-4895-46f4-9b4d-3e0bcf47c97e
+	fromColumn: 'mart fact_shipment'.vehicle_key
+	toColumn: 'mart dim_vehicle'.vehicle_key
+
+relationship 700c6c06-2817-119f-1ac0-5cebf82052cd
+	fromColumn: 'mart fact_shipment'.booking_date_key
+	toColumn: 'mart dim_date'.date_key
+
+relationship 3446d276-8e8c-2e0d-388a-b3b728bb4d45
+	isActive: false
+	fromColumn: 'mart fact_shipment'.actual_eta_date_key
+	toColumn: 'mart dim_date'.date_key
+
+relationship 4b555182-c273-eac3-84f7-4cfe80b9906f
+	isActive: false
+	fromColumn: 'mart fact_shipment'.trip_start_date_key
+	toColumn: 'mart dim_date'.date_key
+

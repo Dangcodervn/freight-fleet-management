@@ -1,0 +1,26 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_ProTooling = ["DevMode","MCP-PBIModeling"]
+
+annotation PBI_QueryOrder = ["mart dim_customer","mart dim_date","mart dim_driver","mart dim_material","mart dim_route","mart dim_vehicle","mart fact_shipment"]
+
+ref table 'mart dim_customer'
+ref table 'mart dim_date'
+ref table 'mart dim_driver'
+ref table 'mart dim_material'
+ref table 'mart dim_route'
+ref table 'mart dim_vehicle'
+ref table 'mart fact_shipment'
+ref table _Measures
+
+ref cultureInfo en-US
+

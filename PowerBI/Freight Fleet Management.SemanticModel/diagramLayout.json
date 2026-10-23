@@ -1,0 +1,126 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 132.88595976623833,
+        "y": 0
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 69,
+            "y": 0
+          },
+          "nodeIndex": "mart dim_customer",
+          "nodeLineageTag": "20b29ef7-a781-410f-9d6f-e60394714575",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 1
+        },
+        {
+          "location": {
+            "x": 807.46601233941078,
+            "y": 0
+          },
+          "nodeIndex": "mart dim_date",
+          "nodeLineageTag": "0ee225b1-0d18-4a02-9051-3403b6ddfb84",
+          "size": {
+            "height": 388,
+            "width": 234
+          },
+          "zIndex": 7
+        },
+        {
+          "location": {
+            "x": 0,
+            "y": 336
+          },
+          "nodeIndex": "mart dim_driver",
+          "nodeLineageTag": "cc72c712-4abb-4462-afb9-65a6343122a4",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 2
+        },
+        {
+          "location": {
+            "x": 524.46601233941078,
+            "y": 0
+          },
+          "nodeIndex": "mart dim_material",
+          "nodeLineageTag": "9c35ea7e-5656-4b30-96b5-4fa621645699",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 3
+        },
+        {
+          "location": {
+            "x": 540.86651773617552,
+            "y": 523.51403389168911
+          },
+          "nodeIndex": "mart dim_route",
+          "nodeLineageTag": "2f5bb48d-bf80-458c-ae6d-52c83002bfcd",
+          "size": {
+            "height": 190,
+            "width": 234
+          },
+          "zIndex": 4
+        },
+        {
+          "location": {
+            "x": 161.13611082939681,
+            "y": 561.58506669732526
+          },
+          "nodeIndex": "mart dim_vehicle",
+          "nodeLineageTag": "84610906-52dd-4e62-83d4-1df2f3852348",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 5
+        },
+        {
+          "location": {
+            "x": 334.23053460227555,
+            "y": 161.23503405139104
+          },
+          "nodeIndex": "mart fact_shipment",
+          "nodeLineageTag": "21870de6-3e0d-468a-b94a-c3641744b372",
+          "size": {
+            "height": 335.56634602361009,
+            "width": 234
+          },
+          "zIndex": 6
+        },
+        {
+          "location": {
+            "x": 1375.4660123394108,
+            "y": 256.79253334866263
+          },
+          "nodeIndex": "_Measures",
+          "nodeLineageTag": "27911beb-23cc-4648-92fd-aab4ad7a85fb",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
+      "name": "All tables",
+      "zoomValue": 89.192590520569524,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "All tables",
+  "defaultDiagram": "All tables"
+}

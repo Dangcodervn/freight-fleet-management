@@ -1,0 +1,299 @@
+/// Holder table for all DAX measures. Its only column, Min Shipments (5, 10, 20), is the slicer field that sets the minimum shipment threshold for rankings.
+table _Measures
+	lineageTag: 27911beb-23cc-4648-92fd-aab4ad7a85fb
+
+	/// Number of shipments (one row of the fact table per shipment).
+	measure Shipments = COUNTROWS ( 'mart fact_shipment' )
+		formatString: #,##0
+		displayFolder: 1 Volume
+		lineageTag: facc5821-faae-4e8e-80df-789b10931f2c
+
+	/// Distinct vehicles (registrations) with at least one shipment in the current filter.
+	measure 'Active Vehicles' = DISTINCTCOUNT ( 'mart fact_shipment'[vehicle_key] )
+		formatString: #,##0
+		displayFolder: 1 Volume
+		lineageTag: 3fc16337-8b06-406c-94b6-a6280bff2602
+
+	/// Distinct customers with at least one shipment in the current filter.
+	measure 'Active Customers' = DISTINCTCOUNT ( 'mart fact_shipment'[customer_key] )
+		formatString: #,##0
+		displayFolder: 1 Volume
+		lineageTag: e517e5da-a613-47d3-a1f0-b9935a22e08e
+
+	/// Distinct named drivers. Shipments without a driver name (the Unknown row) are excluded. A driver is identified by name only, so same-name drivers are merged.
+	measure 'Active Drivers' =
+			CALCULATE (
+			    DISTINCTCOUNT ( 'mart fact_shipment'[driver_key] ),
+			    'mart dim_driver'[driver_name] <> "Unknown"
+			)
+		formatString: #,##0
+		displayFolder: 1 Volume
+		lineageTag: 62546d30-b745-4749-9213-85da00d8416a
+
+	/// Shipments with no recorded actual arrival time (still in transit at snapshot time). Their ontime label is provisional.
+	measure 'Shipments Without Actual ETA' = CALCULATE ( [Shipments], 'mart fact_shipment'[actual_eta] = BLANK () )
+		formatString: #,##0
+		displayFolder: 1 Volume
+		lineageTag: 3019ba6a-c9b5-41e9-9a76-4ca304537edc
+
+	/// Share of the selected shipments that belong to the customer(s) in the current filter.
+	measure 'Customer Share of Shipments %' = DIVIDE ( [Shipments], CALCULATE ( [Shipments], ALLSELECTED ( 'mart dim_customer' ) ) )
+		formatString: 0.0%
+		displayFolder: 1 Volume
+		lineageTag: ca0decf4-175e-481c-8b6a-292d85640cb1
+
+	/// Shipments whose source ontime label is Yes.
+	measure 'On-time Shipments' = SUM ( 'mart fact_shipment'[is_ontime] )
+		formatString: #,##0
+		displayFolder: 2 Delivery quality
+		lineageTag: 5d8c4841-34f0-49ea-bdbd-cc70559849b3
+
+	/// On-time shipments divided by all shipments, using the source ontime column. Includes the shipments still in transit, whose label is provisional.
+	measure 'On-time Rate' = DIVIDE ( [On-time Shipments], [Shipments] )
+		formatString: 0.0%
+		displayFolder: 2 Delivery quality
+		lineageTag: 789690ec-9ea6-414b-b7b2-9d2d3c86e979
+
+	/// Shipments whose source ontime label is No.
+	measure 'Late Shipments' = [Shipments] - [On-time Shipments]
+		formatString: #,##0
+		displayFolder: 2 Delivery quality
+		lineageTag: 88eb05ed-30ab-46d3-948c-cae1c34a3c95
+
+	/// Average of actual ETA minus planned ETA in hours. Positive means late, negative means early. Shipments without an actual ETA are skipped. Planned ETA is mostly booking time + 100 hours.
+	measure 'Avg ETA Variance (h)' = AVERAGE ( 'mart fact_shipment'[eta_variance_hours] )
+		formatString: #,##0.0
+		displayFolder: 2 Delivery quality
+		lineageTag: cc95a8b5-ab4b-4a73-9193-c426dfdeaebe
+
+	/// Average hours from trip start to actual ETA. Only shipments where actual ETA is after trip start.
+	measure 'Avg Trip Duration (h)' = AVERAGE ( 'mart fact_shipment'[trip_duration_hours] )
+		formatString: #,##0.0
+		displayFolder: 2 Delivery quality
+		lineageTag: fcabfe08-cc06-438d-a3f5-fc3a8d6c0f51
+
+	/// Average transportation distance in kilometres. Shipments with no distance are skipped.
+	measure 'Avg Distance (km)' = AVERAGE ( 'mart fact_shipment'[transportation_distance_km] )
+		formatString: #,##0
+		displayFolder: 2 Delivery quality
+		lineageTag: 758e2d3b-0760-4f1f-9a81-c7e22a88e5b3
+
+	/// Share of shipments that have both a planned and an actual ETA, i.e. the share behind the ETA variance measures.
+	measure '% With ETA Variance' = DIVIDE ( COUNT ( 'mart fact_shipment'[eta_variance_hours] ), [Shipments] )
+		formatString: 0.0%
+		displayFolder: 2 Delivery quality
+		lineageTag: dcde7d9b-7f7f-4653-9010-61cc7f294cfb
+
+	/// Total trip hours divided by total kilometres, over shipments where both are valid (distance > 0, duration > 0). Distance-weighted, so short trips do not dominate.
+	measure 'Hours per km' =
+			VAR _valid =
+			    FILTER ( 'mart fact_shipment', NOT ISBLANK ( 'mart fact_shipment'[hours_per_km] ) )
+			RETURN
+			    DIVIDE (
+			        SUMX ( _valid, 'mart fact_shipment'[trip_duration_hours] ),
+			        SUMX ( _valid, 'mart fact_shipment'[transportation_distance_km] )
+			    )
+		formatString: #,##0.000
+		displayFolder: 3 Efficiency
+		lineageTag: 8910d561-5c4d-413c-88dc-dc78b1b68006
+
+	/// Hours per km over the whole dataset, ignoring filters. Reference level for the slow-trip rule.
+	measure 'Overall Hours per km' = CALCULATE ( [Hours per km], REMOVEFILTERS ( 'mart fact_shipment' ) )
+		formatString: #,##0.000
+		displayFolder: 3 Efficiency
+		lineageTag: e2d35e9c-df00-4584-afdc-fc54b9c52f18
+
+	/// Shipments whose hours per km is at least twice the overall hours per km.
+	measure 'Slow Trips' =
+			VAR _threshold = 2 * [Overall Hours per km]
+			RETURN
+			    CALCULATE ( [Shipments], 'mart fact_shipment'[hours_per_km] >= _threshold )
+		formatString: #,##0
+		displayFolder: 3 Efficiency
+		lineageTag: 83343719-0d38-4d83-a2da-fc6c6448ebca
+
+	/// Share of slow trips among shipments where hours per km is defined (distance > 0 and trip duration > 0).
+	measure 'Slow Trips %' =
+			DIVIDE (
+			    [Slow Trips],
+			    CALCULATE ( [Shipments], 'mart fact_shipment'[hours_per_km] <> BLANK () )
+			)
+		formatString: 0.0%
+		displayFolder: 3 Efficiency
+		lineageTag: 56c2df10-936a-4863-829b-20e3c7b9b164
+
+	/// Average shipments per active vehicle in the current filter (use with month on the axis for monthly utilization).
+	measure 'Trips per Vehicle' = DIVIDE ( [Shipments], [Active Vehicles] )
+		formatString: #,##0.0
+		displayFolder: 3 Efficiency
+		lineageTag: 797afd8d-06a4-4485-9304-f07cc24117fc
+
+	/// On-time rate over the current ISO week and the 6 weeks before it: sum of on-time shipments / sum of shipments in the 7-week window (not an average of weekly rates). Put iso_week_start on the axis. Weeks without shipments in the whole window return blank.
+	measure 'On-time Rate Rolling 7W' =
+			VAR _weekEnd = MAX ( 'mart dim_date'[iso_week_start] )
+			VAR _weekFrom = _weekEnd - 42
+			RETURN
+			    DIVIDE (
+			        CALCULATE (
+			            SUM ( 'mart fact_shipment'[is_ontime] ),
+			            ALLSELECTED ( 'mart dim_date' ),
+			            'mart dim_date'[iso_week_start] >= _weekFrom,
+			            'mart dim_date'[iso_week_start] <= _weekEnd
+			        ),
+			        CALCULATE (
+			            COUNTROWS ( 'mart fact_shipment' ),
+			            ALLSELECTED ( 'mart dim_date' ),
+			            'mart dim_date'[iso_week_start] >= _weekFrom,
+			            'mart dim_date'[iso_week_start] <= _weekEnd
+			        )
+			    )
+		formatString: 0.0%
+		displayFolder: 4 Trend
+		lineageTag: 207d15f1-9787-4c0a-9053-b3040f6a1970
+
+	/// Shipments in the previous calendar month, by booking date.
+	measure 'Shipments Prev Month' = CALCULATE ( [Shipments], DATEADD ( 'mart dim_date'[full_date], -1, MONTH ) )
+		formatString: #,##0
+		displayFolder: 4 Trend
+		lineageTag: 62dfba68-f7de-4263-885b-f4f02f931898
+
+	/// Month-over-month change in shipments, by booking date. Early months have very few shipments, so read with care.
+	measure 'Shipments MoM %' = DIVIDE ( [Shipments] - [Shipments Prev Month], [Shipments Prev Month] )
+		formatString: 0.0%
+		displayFolder: 4 Trend
+		lineageTag: be4e6af1-ac9f-475d-8877-124463434151
+
+	/// Shipments counted on the date the trip actually started instead of the booking date.
+	measure 'Shipments by Trip Start' =
+			CALCULATE (
+			    [Shipments],
+			    USERELATIONSHIP ( 'mart dim_date'[date_key], 'mart fact_shipment'[trip_start_date_key] )
+			)
+		formatString: #,##0
+		displayFolder: 4 Trend
+		lineageTag: b377ebd6-a216-4a79-afa9-bb17ca055a30
+
+	/// Shipments counted on the date of the actual arrival. Shipments without an actual ETA are not counted.
+	measure 'Shipments by Delivery Date' =
+			CALCULATE (
+			    [Shipments],
+			    USERELATIONSHIP ( 'mart dim_date'[date_key], 'mart fact_shipment'[actual_eta_date_key] )
+			)
+		formatString: #,##0
+		displayFolder: 4 Trend
+		lineageTag: 0ff6d19e-b649-4ee5-8d4d-1a4c34bc4c3e
+
+	/// On-time rate shown only when the shipment count reaches the Min Shipments slicer value, so ranks are not built on one or two trips.
+	measure 'Qualified On-time Rate' = IF ( [Shipments] >= [Min Shipments Value], [On-time Rate] )
+		formatString: 0.0%
+		displayFolder: 5 Ranking
+		lineageTag: 231bd605-9fd5-46c6-87e3-f34a86c6588a
+
+	/// Rank of a driver by qualified on-time rate (1 = best); drivers with the same rate are ordered by more shipments first. Drivers below the Min Shipments threshold and the Unknown driver have no rank. Put driver_name on the rows.
+	measure 'Driver Rank' =
+			VAR _rate = [Qualified On-time Rate]
+			VAR _shipments = [Shipments]
+			VAR _drivers =
+			    ADDCOLUMNS (
+			        FILTER (
+			            ALLSELECTED ( 'mart dim_driver'[driver_name] ),
+			            'mart dim_driver'[driver_name] <> "Unknown"
+			        ),
+			        "@rate", [Qualified On-time Rate],
+			        "@shipments", [Shipments]
+			    )
+			RETURN
+			    IF (
+			        NOT ISBLANK ( _rate ),
+			        COUNTROWS (
+			            FILTER (
+			                _drivers,
+			                [@rate] > _rate
+			                    || ( [@rate] = _rate && [@shipments] > _shipments )
+			            )
+			        ) + 1
+			    )
+		formatString: #,##0
+		displayFolder: 5 Ranking
+		lineageTag: 87a199b1-85b8-49fa-be13-ac418a7522be
+
+	/// Value picked on the Min Shipments slicer (5, 10 or 20; default 10 when nothing or several values are selected). Minimum volume for driver, route and customer rankings.
+	measure 'Min Shipments Value' = SELECTEDVALUE ( '_Measures'[Minimum Shipments], 10 )
+		formatString: #,##0
+		displayFolder: Parameters
+		lineageTag: 9626fdc5-2651-41e1-8865-3eb06d3fd379
+
+	/// Share of shipments that arrived more than 72 hours (3 days) after planned ETA, among shipments with an actual ETA. Shipments still in transit are not in the denominator.
+	measure 'Severely Late %' =
+			VAR _withEta =
+			    CALCULATE ( [Shipments], 'mart fact_shipment'[eta_variance_hours] <> BLANK () )
+			VAR _severe =
+			    CALCULATE ( [Shipments], 'mart fact_shipment'[eta_variance_hours] > 72 )
+			RETURN
+			    DIVIDE ( _severe, _withEta )
+		formatString: 0.0%
+		displayFolder: 2 Delivery quality
+		lineageTag: c2639f0a-ff98-4485-8d84-5bb9e333453c
+
+	/// Average hours late, counting only shipments that arrived after planned ETA. Unlike Avg ETA Variance (h), early shipments do not offset late ones.
+	measure 'Avg Delay of Late Trips (h)' =
+			CALCULATE (
+			    AVERAGE ( 'mart fact_shipment'[eta_variance_hours] ),
+			    'mart fact_shipment'[eta_variance_hours] > 0
+			)
+		formatString: #,##0.0
+		displayFolder: 2 Delivery quality
+		lineageTag: d0c4d1ab-cb82-415a-b7d6-201cf64e60f0
+
+	/// Shipments in the same period one year earlier, by booking date. Data starts on 2019-04-15, so 2019 is a partial year and 2020 comparisons are against that smaller base.
+	measure 'Shipments PY' = CALCULATE ( [Shipments], SAMEPERIODLASTYEAR ( 'mart dim_date'[full_date] ) )
+		formatString: #,##0
+		displayFolder: 4 Trend
+		lineageTag: 4b03f0b6-2f92-45f5-b625-6aa8387ca07b
+
+	/// Year-over-year change in shipments, by booking date. Blank when there are no shipments in the same period of the previous year (every period in 2019, and routes that did not run in 2019).
+	measure 'Shipments YoY %' = DIVIDE ( [Shipments] - [Shipments PY], [Shipments PY] )
+		formatString: 0.0%
+		displayFolder: 4 Trend
+		lineageTag: d20d8f9b-09cb-437c-90e3-d0cdc857a05d
+
+	/// On-time rate in the previous calendar month, by booking date.
+	measure 'On-time Rate Prev Month' = CALCULATE ( [On-time Rate], DATEADD ( 'mart dim_date'[full_date], -1, MONTH ) )
+		formatString: 0.0%
+		displayFolder: 4 Trend
+		lineageTag: e30aeadd-64c6-466b-8589-ce43e69e3b24
+
+	/// Month-over-month change in on-time rate, in percentage points (not a relative percent). Early months have very few shipments, so read with care.
+	measure 'On-time Rate MoM (pp)' = ([On-time Rate] - [On-time Rate Prev Month]) * 100
+		formatString: +0.0;-0.0;0.0
+		displayFolder: 4 Trend
+		lineageTag: 7380fcbd-518f-403e-89cc-5f546aabfcf0
+
+	/// Median hours from trip start to actual ETA. Only shipments where actual ETA is after trip start. The median is used because a few very long trips pull the average up.
+	measure 'Median Trip Duration (h)' = MEDIAN ( 'mart fact_shipment'[trip_duration_hours] )
+		formatString: #,##0.0
+		displayFolder: 2 Delivery quality
+		lineageTag: 3fa345cd-472c-4049-b4ea-0b388eb73d5f
+
+	/// On-time rate with shipments counted on the date the trip started instead of the booking date. Use with day of week or month from the date table on the axis.
+	measure 'On-time Rate by Trip Start' = CALCULATE ( [On-time Rate], USERELATIONSHIP ( 'mart dim_date'[date_key], 'mart fact_shipment'[trip_start_date_key] ) )
+		formatString: 0.0%
+		displayFolder: 4 Trend
+		lineageTag: 5ec9f680-b8ec-427a-b5ee-691092bb0e27
+
+	measure 'Late Shipments % of Total' = DIVIDE ( [Late Shipments], CALCULATE ( [Late Shipments], REMOVEFILTERS ( 'mart fact_shipment'[distance_band] ) ) )
+		displayFolder: 2 Delivery quality
+		lineageTag: 465d7381-7b7a-48f4-ab9e-c1f0de297f23
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	/// Slicer field: minimum number of shipments (5, 10 or 20) for a driver, route or customer to be ranked.
+	column 'Minimum Shipments'
+		lineageTag: 4cd8687a-c609-4712-9095-65108ec6625b
+		summarizeBy: none
+		sourceColumn: [Min Shipments]
+
+	partition _Measures = calculated
+		mode: import
+		source = DATATABLE ( "Min Shipments", INTEGER, { { 5 }, { 10 }, { 20 } } )
+

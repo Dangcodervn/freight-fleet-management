@@ -1,0 +1,32 @@
+table 'mart dim_material'
+	lineageTag: 9c35ea7e-5656-4b30-96b5-4fa621645699
+
+	column material_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 13ebd448-fd90-48da-85b4-3e49fd153c57
+		summarizeBy: none
+		sourceColumn: material_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column material_name
+		dataType: string
+		lineageTag: c309d5c1-c029-4297-b486-6915c678c79e
+		summarizeBy: none
+		sourceColumn: material_name
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'mart dim_material' = m
+		mode: import
+		source =
+				let
+				  Source = Sql.Databases("DESKTOP-HPKUKRN\DANGSERVER"),
+				  #"Navigation 1" = Source{[Name = "freight_fleet_management"]}[Data],
+				  #"Navigation 2" = #"Navigation 1"{[Schema = "mart", Item = "dim_material"]}[Data]
+				in
+				  #"Navigation 2"
+
+	annotation PBI_ResultType = Table
+

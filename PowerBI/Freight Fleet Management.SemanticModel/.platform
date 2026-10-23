@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "Freight Fleet Management"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "75e744fa-f53a-45df-a68b-f675f522fe51"
+  }
+}

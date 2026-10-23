@@ -1,0 +1,48 @@
+table 'mart dim_route'
+	lineageTag: 2f5bb48d-bf80-458c-ae6d-52c83002bfcd
+
+	column route_key
+		dataType: int64
+		formatString: 0
+		lineageTag: beed65f0-b6f6-4091-ab0f-0bc7a3969839
+		summarizeBy: none
+		sourceColumn: route_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column origin_location
+		dataType: string
+		lineageTag: d0793484-ce36-4d68-bd63-069b0b7e178c
+		summarizeBy: none
+		sourceColumn: origin_location
+
+		annotation SummarizationSetBy = Automatic
+
+	column destination_location
+		dataType: string
+		lineageTag: 7546a791-5360-4c4e-9329-12991bf9afd0
+		summarizeBy: none
+		sourceColumn: destination_location
+
+		annotation SummarizationSetBy = Automatic
+
+	column route_label
+		dataType: string
+		lineageTag: a28f79e9-5bd2-4d26-b47a-6f5a376987c0
+		summarizeBy: none
+		sourceColumn: route_label
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'mart dim_route' = m
+		mode: import
+		source =
+				let
+				  Source = Sql.Databases("DESKTOP-HPKUKRN\DANGSERVER"),
+				  #"Navigation 1" = Source{[Name = "freight_fleet_management"]}[Data],
+				  #"Navigation 2" = #"Navigation 1"{[Schema = "mart", Item = "dim_route"]}[Data]
+				in
+				  #"Navigation 2"
+
+	annotation PBI_ResultType = Table
+
