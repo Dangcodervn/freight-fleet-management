@@ -56,7 +56,7 @@ Dữ liệu không có doanh thu, chi phí hay điểm hài lòng của khách h
 | Data preparation | Làm sạch 3.585 dòng thô qua 3 lớp `raw` → `logistics` → `mart` bằng 5 script T-SQL chạy theo thứ tự |
 | Ad-hoc SQL | Viết truy vấn cho 11 trong 15 câu ad-hoc của brief (Q1 đến Q11), dùng `GROUP BY`, `CASE WHEN`, window function (rolling 7 tuần theo ISO week) |
 | Star schema | 1 bảng fact `mart fact_shipment` (3.574 dòng) và 6 bảng dimension, nạp vào Power BI ở chế độ Import |
-| DAX | 35 measure chia 6 folder, gồm xếp hạng tài xế, rolling 7 tuần, ngưỡng chuyến chậm bất thường và đổi mốc ngày bằng `USERELATIONSHIP` |
+| DAX | 36 measure chia 6 folder, gồm xếp hạng tài xế, rolling 7 tuần, ngưỡng chuyến chậm bất thường và đổi mốc ngày bằng `USERELATIONSHIP` |
 | Dashboard | 6 trang: Overview, Time, Route, Driver, Vehicle, Customer & Material, mỗi chart trả lời một câu hỏi nhỏ |
 | Quản lý dự án | Dự án Power BI lưu dạng PBIP (file văn bản TMDL và JSON) để theo dõi thay đổi bằng Git |
 
@@ -166,7 +166,7 @@ Star schema trong schema `mart`:
 
 Không có bảng dimension riêng cho loại xe (`Dim_Vehicle_Type`) và cho các nhóm: loại xe nằm trong `mart dim_vehicle`, còn `distance_band`, `payload_group`, `eta_variance_band`, `trip_start_hour` nằm ngay trong `mart fact_shipment` để model gọn.
 
-Model có 35 measure chia 6 folder: `1 Volume`, `2 Delivery quality`, `3 Efficiency`, `4 Trend`, `5 Ranking` và `Parameters`. Trong đó 15 measure được dùng trực tiếp trên dashboard.
+Model có 36 measure chia 6 folder: `1 Volume`, `2 Delivery quality`, `3 Efficiency`, `4 Trend`, `5 Ranking` và `Parameters`. Trong đó 17 measure được dùng trực tiếp trên dashboard.
 
 Các measure phức tạp nhất:
 
@@ -176,34 +176,36 @@ Các measure phức tạp nhất:
 - `Qualified On-time Rate`: so `Shipments` với giá trị slicer `Minimum Shipments` (lấy bằng `SELECTEDVALUE`, mặc định 10) để ẩn nhóm quá ít chuyến khỏi bảng xếp hạng.
 - `On-time Rate by Trip Start`: dùng `USERELATIONSHIP` để đếm theo ngày xuất phát thay vì ngày đặt hàng.
 - `Hours per km`: dùng `SUMX` trên tập chuyến hợp lệ, lấy tổng giờ chia tổng km nên chuyến ngắn không làm lệch kết quả.
+- `ETA Band Share %`: dùng `DIVIDE` và `REMOVEFILTERS` trên cả `eta_variance_band` lẫn cột sắp xếp `eta_variance_band_order`, vì ma trận đưa cả hai cột vào bộ lọc. Nhờ vậy mỗi tháng cộng đủ 100%.
 
 ---
 
 ## Dashboard
 
-**1. Overview**: 6 thẻ KPI (`Shipments`, `On-time Rate`, `Avg ETA Variance (h)`, `Severely Late %`, `Active Vehicles`, `Active Customers`), chart số chuyến kết hợp tỷ lệ đúng hạn theo tháng, bản đồ điểm đến, cột xếp chồng chuyến đúng hạn và trễ theo nhóm khoảng cách, và cột số chuyến theo nhóm mức trễ.
+**1. Overview**: 6 thẻ KPI (`Shipments`, `On-time Rate`, `Avg ETA Variance (h)`, `Severely Late %`, `Active Vehicles`, `Active Customers`), chart số chuyến kết hợp tỷ lệ đúng hạn theo tháng, bản đồ điểm đến, thanh xếp chồng chuyến đúng hạn và trễ theo nhóm khoảng cách, và cột số chuyến theo nhóm mức trễ.
 
-![Overview](Images/overview.png)
+![Overview](Images/Overview.png)
 
-**2. Time**: cột xếp chồng 100% cơ cấu mức trễ theo tháng, đường trung vị thời gian chuyến theo tháng, và hai chart kết hợp số chuyến với tỷ lệ đúng hạn theo thứ trong tuần và theo giờ xuất phát.
+**2. Time**: ma trận heatmap cơ cấu mức trễ theo tháng (mỗi tháng cộng đủ 100%), chart kết hợp số chuyến trễ với mức trễ trung bình theo tháng, và hai chart kết hợp số chuyến với tỷ lệ đúng hạn theo thứ trong tuần và theo giờ xuất phát.
 
-![Time](Images/time.png)
+![Time](Images/Time%20analysis.png)
 
 **3. Route**: top 10 tuyến theo số chuyến trễ, scatter số chuyến × tỷ lệ đúng hạn của từng tuyến, bảng nhiệt độ lệch ETA theo tuyến × giờ xuất phát, và scatter quãng đường × trung vị thời gian chuyến.
 
-![Route](Images/route.png)
+<!-- ![Route](Images/Route.png) -->
+
 
 **4. Driver**: top 10 tài xế theo số chuyến trễ, scatter số chuyến × tỷ lệ đúng hạn và quãng đường × tỷ lệ đúng hạn của từng tài xế, `Slow Trips %` theo tháng và top 10 tuyến theo số chuyến chạy chậm bất thường.
 
-![Driver](Images/driver.png)
+<!-- ![Driver](Images/Driver.png) -->
 
 **5. Vehicle**: top 10 loại xe và nhóm tải trọng theo số chuyến đúng hạn và trễ, độ lệch ETA trung bình theo loại xe, và số chuyến mỗi xe theo tháng và theo loại xe.
 
-![Vehicle](Images/vehicle.png)
+<!-- ![Vehicle](Images/Vehicle.png) -->
 
 **6. Customer & Material**: top 10 khách hàng và top 10 loại hàng theo số chuyến đúng hạn và trễ, quãng đường trung bình và trung vị thời gian chuyến của từng loại hàng.
 
-![Customer & Material](Images/customer-material.png)
+<!-- ![Customer & Material](Images/Customer%20and%20Material.png) -->
 
 ---
 
