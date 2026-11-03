@@ -287,6 +287,22 @@ table _Measures
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Share of the shipments in the current row (for example one month) that fall in the current ETA variance band. Put year_month on the rows and eta_variance_band on the columns of a matrix: each row adds up to 100%. The band column is sorted by eta_variance_band_order, so both columns are cleared in the denominator. Bands with no shipments in a month are blank.
+	measure 'ETA Band Share %' =
+			DIVIDE (
+			    [Shipments],
+			    CALCULATE (
+			        [Shipments],
+			        REMOVEFILTERS (
+			            'mart fact_shipment'[eta_variance_band],
+			            'mart fact_shipment'[eta_variance_band_order]
+			        )
+			    )
+			)
+		formatString: 0.0%
+		displayFolder: 2 Delivery quality
+		lineageTag: e6aded38-b233-44fa-8cc0-8707fabff30f
+
 	/// Slicer field: minimum number of shipments (5, 10 or 20) for a driver, route or customer to be ranked.
 	column 'Minimum Shipments'
 		lineageTag: 4cd8687a-c609-4712-9095-65108ec6625b

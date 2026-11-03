@@ -390,51 +390,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "88f9e1d9373219b95c05",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "mart dim_date"
-              }
-            },
-            "Property": "day_name"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "d10c076b9088c48d2971",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "Shipments by Trip Start"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "fa74dc5bbd42c71e79d5",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "On-time Rate by Trip Start"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

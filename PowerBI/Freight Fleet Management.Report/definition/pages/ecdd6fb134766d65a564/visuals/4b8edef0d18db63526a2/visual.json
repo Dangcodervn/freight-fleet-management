@@ -80,6 +80,20 @@
                   "Value": "false"
                 }
               }
+            },
+            "invertAxis": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "axisType": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Categorical'"
+                }
+              }
             }
           }
         }
@@ -124,7 +138,7 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
                 }
               }
             },
@@ -157,9 +171,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "ThemeDataColor": {
-                      "ColorId": 6,
-                      "Percent": 0
+                    "Literal": {
+                      "Value": "'#66BB6A'"
                     }
                   }
                 }
@@ -176,6 +189,13 @@
               "expr": {
                 "Literal": {
                   "Value": "true"
+                }
+              }
+            },
+            "backgroundTransparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "15D"
                 }
               }
             }
@@ -209,6 +229,20 @@
               "expr": {
                 "Literal": {
                   "Value": "10D"
+                }
+              }
+            },
+            "enableValueDataLabel": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "enableBackground": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
                 }
               }
             }
@@ -266,9 +300,8 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "ThemeDataColor": {
-                      "ColorId": 6,
-                      "Percent": 0
+                    "Literal": {
+                      "Value": "'#66BB6A'"
                     }
                   }
                 }
@@ -375,7 +408,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "12421484109eeb63e129",
+        "name": "d18fccd9841cad187df2",
         "field": {
           "Column": {
             "Expression": {
@@ -389,7 +422,7 @@
         "type": "Advanced"
       },
       {
-        "name": "3208d0b5034c256876c4",
+        "name": "3b12900f71c101990de8",
         "field": {
           "Measure": {
             "Expression": {
@@ -403,7 +436,7 @@
         "type": "Advanced"
       },
       {
-        "name": "3329c6fff0566b00703d",
+        "name": "7c4b191d760553b05400",
         "field": {
           "Measure": {
             "Expression": {
