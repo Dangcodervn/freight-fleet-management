@@ -15,15 +15,18 @@
 
 ## Table of Contents
 
-- [Project Overview](#project-overview)
-- [Project Highlights](#project-highlights)
-- [Repository Structure](#repository-structure)
-- [Raw Data](#raw-data)
-- [Data Pipeline](#data-pipeline)
-- [Semantic Model](#semantic-model)
-- [Dashboard](#dashboard)
-- [Key Findings](#key-findings)
-- [Tech Stack](#tech-stack)
+- [Freight Fleet Management](#freight-fleet-management)
+  - [Phân tích ETA variance và tỷ lệ giao đúng hạn của các chuyến vận tải đường bộ B2B cho Haulix Logistics](#phân-tích-eta-variance-và-tỷ-lệ-giao-đúng-hạn-của-các-chuyến-vận-tải-đường-bộ-b2b-cho-haulix-logistics)
+  - [Table of Contents](#table-of-contents)
+  - [Project Overview](#project-overview)
+  - [Project Highlights](#project-highlights)
+  - [Repository Structure](#repository-structure)
+  - [Raw Data](#raw-data)
+  - [Data Pipeline](#data-pipeline)
+  - [Semantic Model](#semantic-model)
+  - [Dashboard](#dashboard)
+  - [Key Findings](#key-findings)
+  - [Tech Stack](#tech-stack)
 
 ---
 
@@ -51,14 +54,14 @@ Dữ liệu không có doanh thu, chi phí hay điểm hài lòng của khách h
 
 ## Project Highlights
 
-| Area | What this project does |
-|---|---|
-| Data preparation | Làm sạch 3.585 dòng thô qua 3 lớp `raw` → `logistics` → `mart` bằng 5 script T-SQL chạy theo thứ tự |
-| Ad-hoc SQL | Viết truy vấn cho 11 trong 15 câu ad-hoc của brief (Q1 đến Q11), dùng `GROUP BY`, `CASE WHEN`, window function (rolling 7 tuần theo ISO week) |
-| Star schema | 1 bảng fact `mart fact_shipment` (3.574 dòng) và 6 bảng dimension, nạp vào Power BI ở chế độ Import |
-| DAX | 36 measure chia 6 folder, gồm xếp hạng tài xế, rolling 7 tuần, ngưỡng chuyến chậm bất thường và đổi mốc ngày bằng `USERELATIONSHIP` |
-| Dashboard | 6 trang: Overview, Time, Route, Driver, Vehicle, Customer & Material, mỗi chart trả lời một câu hỏi nhỏ |
-| Quản lý dự án | Dự án Power BI lưu dạng PBIP (file văn bản TMDL và JSON) để theo dõi thay đổi bằng Git |
+| Area             | What this project does                                                                                                                        |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Data preparation | Làm sạch 3.585 dòng thô qua 3 lớp `raw` → `logistics` → `mart` bằng 5 script T-SQL chạy theo thứ tự                                           |
+| Ad-hoc SQL       | Viết truy vấn cho 11 trong 15 câu ad-hoc của brief (Q1 đến Q11), dùng `GROUP BY`, `CASE WHEN`, window function (rolling 7 tuần theo ISO week) |
+| Star schema      | 1 bảng fact `mart fact_shipment` (3.574 dòng) và 6 bảng dimension, nạp vào Power BI ở chế độ Import                                           |
+| DAX              | 36 measure chia 6 folder, gồm xếp hạng tài xế, rolling 7 tuần, ngưỡng chuyến chậm bất thường và đổi mốc ngày bằng `USERELATIONSHIP`           |
+| Dashboard        | 6 trang: Overview, Time, Route, Driver, Vehicle, Customer & Material, mỗi chart trả lời một câu hỏi nhỏ                                       |
+| Quản lý dự án    | Dự án Power BI lưu dạng PBIP (file văn bản TMDL và JSON) để theo dõi thay đổi bằng Git                                                        |
 
 ---
 
@@ -94,10 +97,10 @@ Freight Fleet Management/
 
 Dữ liệu thô nằm ở `Data/logistics.shipments.csv`, được nạp bằng `BULK INSERT` vào `raw.shipments`. Thư mục `Data/` nằm trong `.gitignore` vì có số điện thoại tài xế. Bản Excel `logistics.shipments.xlsx` chứa cùng dữ liệu (sheet `Primary Data`) và thêm sheet `Data Dictionary`.
 
-| File | Số dòng |
-|---|---|
-| `logistics.shipments.csv` | 3.585 |
-| **Tổng** | **3.585** |
+| File                      | Số dòng   |
+| ------------------------- | --------- |
+| `logistics.shipments.csv` | 3.585     |
+| **Tổng**                  | **3.585** |
 
 Mỗi dòng là một shipment. Một shipment được nhận diện bằng bộ ba `booking_id`, `customer_name`, `material_shipped`: có 3.582 `booking_id` khác nhau trên 3.585 dòng, và không có dòng nào trùng hoàn toàn.
 
@@ -188,12 +191,11 @@ Các measure phức tạp nhất:
 
 **2. Time**: ma trận heatmap cơ cấu mức trễ theo tháng (mỗi tháng cộng đủ 100%), chart kết hợp số chuyến trễ với mức trễ trung bình theo tháng, và hai chart kết hợp số chuyến với tỷ lệ đúng hạn theo thứ trong tuần và theo giờ xuất phát.
 
-![Time](Images/Time%20analysis.png)
+![Time](Images/Time.png)
 
 **3. Route**: top 10 tuyến theo số chuyến trễ, scatter số chuyến × tỷ lệ đúng hạn của từng tuyến, bảng nhiệt độ lệch ETA theo tuyến × giờ xuất phát, và scatter quãng đường × trung vị thời gian chuyến.
 
 <!-- ![Route](Images/Route.png) -->
-
 
 **4. Driver**: top 10 tài xế theo số chuyến trễ, scatter số chuyến × tỷ lệ đúng hạn và quãng đường × tỷ lệ đúng hạn của từng tài xế, `Slow Trips %` theo tháng và top 10 tuyến theo số chuyến chạy chậm bất thường.
 
